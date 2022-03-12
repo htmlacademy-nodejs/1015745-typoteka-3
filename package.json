@@ -1,0 +1,25 @@
+{
+  "name": "1015745-typoteka-3",
+  "version": "1.0.0",
+  "description": "«Типотека»",
+  "main": "./src/service/service.js",
+  "scripts": {
+    "start": "node ./src/service/service.js",
+    "eslint": "eslint --ext .js src/",
+    "test": "npm run eslint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/it-babaev/1015745-typoteka-3.git"
+  },
+  "author": "Babaev Dmitry",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/it-babaev/1015745-typoteka-3/issues"
+  },
+  "homepage": "https://github.com/it-babaev/1015745-typoteka-3#readme",
+  "devDependencies": {
+    "eslint": "8.11.0",
+    "eslint-config-htmlacademy": "0.6.0"
+  }
+}
