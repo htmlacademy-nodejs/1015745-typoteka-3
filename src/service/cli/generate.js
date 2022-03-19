@@ -78,7 +78,7 @@ const createPost = () => (
     announce: shuffle(SENTENCES).slice(0, getRandomInt(AnnounceRestrict.min, AnnounceRestrict.max)).join(` `),
     fullText: shuffle(SENTENCES).slice(0, getRandomInt(1, SENTENCES.length)).join(` `),
     createdDate: getRandomDate(maxPastTime, currentTime),
-    category: CATEGORIES[getRandomInt(0, CATEGORIES.length - 1)]
+    category: shuffle(CATEGORIES).slice(0, getRandomInt(1, CATEGORIES.length))
   }
 );
 
