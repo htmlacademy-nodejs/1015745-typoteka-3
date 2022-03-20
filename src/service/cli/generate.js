@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require(`fs`);
-const {ExitCode} = require(`../../constants`);
+const {EXIT_CODE} = require(`../../constants`);
 
 const {
   getRandomInt,
@@ -9,7 +9,7 @@ const {
   getRandomDate
 } = require(`../../utils`);
 
-const OUTPUT_FILE_NAME = `mock.json`;
+const OUTPUT_FILE_NAME = `mocks.json`;
 
 const TITLES = [
   `Ёлки. История деревьев`,
@@ -64,9 +64,9 @@ const CATEGORIES = [
 const DEFAULT_COUNT = 1;
 const MAX_POSTS = 1000;
 const MAX_PAST_DATE_INTERVAL = 90;
-const AnnounceRestrict = {
-  min: 1,
-  max: 5
+const ANNOUNCE_RESTRICT = {
+  MIN: 1,
+  MAX: 5
 };
 
 const currentTime = Date.now();
@@ -75,7 +75,7 @@ const maxPastTime = new Date(currentTime).setDate(new Date(currentTime).getDate(
 const createPost = () => (
   {
     title: TITLES[getRandomInt(0, TITLES.length - 1)],
-    announce: shuffle(SENTENCES).slice(0, getRandomInt(AnnounceRestrict.min, AnnounceRestrict.max)).join(` `),
+    announce: shuffle(SENTENCES).slice(0, getRandomInt(ANNOUNCE_RESTRICT.MIN, ANNOUNCE_RESTRICT.MAX)).join(` `),
     fullText: shuffle(SENTENCES).slice(0, getRandomInt(1, SENTENCES.length)).join(` `),
     createdDate: getRandomDate(maxPastTime, currentTime),
     category: shuffle(CATEGORIES).slice(0, getRandomInt(1, CATEGORIES.length))
@@ -83,7 +83,7 @@ const createPost = () => (
 );
 
 const generatePosts = (count) => (
-  Array(count).fill({}).map(createPost)
+  Array.from({length: count}, createPost)
 );
 
 module.exports = {
@@ -94,14 +94,15 @@ module.exports = {
 
     if (countPosts > MAX_POSTS) {
       console.error(`Не больше 1000 публикаций`);
-      process.exit(ExitCode.error);
+      process.exit(EXIT_CODE.ERROR);
     }
 
     const content = JSON.stringify(generatePosts(countPosts));
 
     fs.writeFile(OUTPUT_FILE_NAME, content, (err) => {
       if (err) {
-        return console.error(`Can't write data to file...`);
+        console.error(`Can't write data to file...`);
+        process.exit(EXIT_CODE.ERROR);
       }
 
       return console.log(`Mock file created.`);
