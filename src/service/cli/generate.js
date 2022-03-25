@@ -2,6 +2,7 @@
 
 const {writeFile} = require(`fs`);
 const {promisify} = require(`util`);
+const chalk = require(`chalk`);
 const {EXIT_CODE} = require(`../../constants`);
 
 const {
@@ -94,7 +95,7 @@ module.exports = {
     const countPosts = Number.parseInt(count, 10) || DEFAULT_COUNT;
 
     if (countPosts > MAX_POSTS) {
-      console.error(`Не больше 1000 публикаций`);
+      console.error(chalk.red(`Не больше 1000 публикаций`));
       process.exit(EXIT_CODE.ERROR);
     }
 
@@ -102,9 +103,9 @@ module.exports = {
 
     try {
       await promisify(writeFile)(OUTPUT_FILE_NAME, content);
-      console.log(`Mock file created.`);
+      console.log(chalk.green(`Mock file created.`));
     } catch (error) {
-      console.error(`Can't write data to file...`);
+      console.error(chalk.red(`Can't write data to file...`));
       process.exit(EXIT_CODE.ERROR);
     }
   }
