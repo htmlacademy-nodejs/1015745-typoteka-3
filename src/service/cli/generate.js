@@ -1,6 +1,7 @@
 'use strict';
 
-const fs = require(`fs`);
+const {writeFile} = require(`fs`);
+const {promisify} = require(`util`);
 const {EXIT_CODE} = require(`../../constants`);
 
 const {
@@ -88,7 +89,7 @@ const generatePosts = (count) => (
 
 module.exports = {
   name: `--generate`,
-  run(args) {
+  async run(args) {
     const [count] = args;
     const countPosts = Number.parseInt(count, 10) || DEFAULT_COUNT;
 
@@ -99,13 +100,12 @@ module.exports = {
 
     const content = JSON.stringify(generatePosts(countPosts));
 
-    fs.writeFile(OUTPUT_FILE_NAME, content, (err) => {
-      if (err) {
-        console.error(`Can't write data to file...`);
-        process.exit(EXIT_CODE.ERROR);
-      }
-
-      return console.log(`Mock file created.`);
-    });
+    try {
+      await promisify(writeFile)(OUTPUT_FILE_NAME, content);
+      console.log(`Mock file created.`);
+    } catch (error) {
+      console.error(`Can't write data to file...`);
+      process.exit(EXIT_CODE.ERROR);
+    }
   }
 };
