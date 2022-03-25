@@ -1,8 +1,7 @@
 'use strict';
 
-const {writeFile} = require(`fs`);
-const {promisify} = require(`util`);
 const chalk = require(`chalk`);
+const {promises: {writeFile}} = require(`fs`);
 const {EXIT_CODE} = require(`../../constants`);
 
 const {
@@ -102,7 +101,7 @@ module.exports = {
     const content = JSON.stringify(generatePosts(countPosts));
 
     try {
-      await promisify(writeFile)(OUTPUT_FILE_NAME, content);
+      await writeFile(OUTPUT_FILE_NAME, content);
       console.log(chalk.green(`Mock file created.`));
     } catch (error) {
       console.error(chalk.red(`Can't write data to file...`));
