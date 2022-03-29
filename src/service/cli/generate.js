@@ -60,15 +60,11 @@ module.exports = {
     const getSentences = readFileContent(DATA_PATH.SENTENCES);
     const getTitles = readFileContent(DATA_PATH.TITLES);
 
-    const data = await Promise.all([
+    const [categories, sentences, titles] = await Promise.all([
       getCategories,
       getSentences,
       getTitles
-    ]).then(([categories, sentences, titles]) => ({
-      categories,
-      sentences,
-      titles
-    })).catch((error) => console.error(chalk.red(error)));
+    ]);
 
     const [count] = args;
     const countPosts = Number.parseInt(count, 10) || DEFAULT_COUNT;
@@ -78,7 +74,7 @@ module.exports = {
       process.exit(EXIT_CODE.ERROR);
     }
 
-    const content = JSON.stringify(generatePosts(countPosts, data));
+    const content = JSON.stringify(generatePosts(countPosts, {categories, sentences, titles}));
 
     try {
       await writeFile(OUTPUT_FILE_NAME, content);
