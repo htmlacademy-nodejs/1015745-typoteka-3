@@ -2,15 +2,13 @@
 
 const chalk = require(`chalk`);
 const {writeFile, readFile} = require(`fs`).promises;
-const {EXIT_CODE, DATA_PATH} = require(`../../constants`);
+const {EXIT_CODE, DATA_PATH, MOCKS_OUTPUT_FILENAME} = require(`../../constants`);
 
 const {
   getRandomInt,
   shuffle,
   getRandomDate
 } = require(`../../utils`);
-
-const OUTPUT_FILE_NAME = `mocks.json`;
 
 const DEFAULT_COUNT = 1;
 const MAX_POSTS = 1000;
@@ -77,7 +75,7 @@ module.exports = {
     const content = JSON.stringify(generatePosts(countPosts, {categories, sentences, titles}));
 
     try {
-      await writeFile(OUTPUT_FILE_NAME, content);
+      await writeFile(MOCKS_OUTPUT_FILENAME, content);
       console.log(chalk.green(`Mock file created.`));
     } catch (error) {
       console.error(chalk.red(`Can't write data to file...`));
