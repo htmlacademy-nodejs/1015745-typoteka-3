@@ -68,11 +68,7 @@ module.exports = {
     const port = Number.parseInt(userPort, 10) || DEFAULT_SERVER_PORT;
 
     const server = createServer(onClientConnect)
-    .listen(port, (err) => {
-      if (err) {
-        return console.error(chalk.red(`Server connection error`, err));
-      }
-
+    .listen(port, () => {
       return console.info(chalk.green(`Server connected on port ${port}`));
     });
 
