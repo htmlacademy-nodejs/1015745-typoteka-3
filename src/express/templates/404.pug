@@ -1,0 +1,11 @@
+extends layout.pug
+
+block content
+  .wrapper-color
+    include parts/header.pug
+    main
+      h1.visually-hidden Ошибка 404
+      section.error
+        h2.error__title.title.title--big Похоже ошиблись адресом
+        a.error__link.text.text--big(href=`/`) Вернуться на главную
+    include parts/footer.pug
