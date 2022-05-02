@@ -1,65 +1,27 @@
 'use strict';
 
 const chalk = require(`chalk`);
-const {createServer} = require(`http`);
+const express = require(`express`);
 const {readFile} = require(`fs`).promises;
 const {
-  HTTP_CODE,
   DEFAULT_SERVER_PORT,
   MOCKS_OUTPUT_FILENAME
 } = require(`../../constants`);
 
-const getHTMLTemplate = (statusCode, content) => {
-  let htmlContent = ``;
+const app = express();
+app.use(express.json());
 
-  if (statusCode === HTTP_CODE.SUCCESS) {
-    htmlContent = `<ul>${content}</ul>`;
+
+app.get(`/posts`, async (req, res) => {
+  try {
+    const fileContent = await readFile(MOCKS_OUTPUT_FILENAME);
+    const mocks = JSON.parse(fileContent);
+
+    res.json(mocks);
+  } catch (err) {
+    res.send([]);
   }
-
-  if (statusCode === HTTP_CODE.NOT_FOUND) {
-    htmlContent = `<p>${content}</p>`;
-  }
-
-  return (
-    `
-    <!DOCTYPE html>
-    <html lang="ru">
-      <head>
-        <title>Node Server Example</title>
-      </head>
-      <body>
-        ${htmlContent}
-      </body>
-    </html>
-  `
-  );
-};
-
-const sendResponce = (res, code, content) => {
-  const htmlResponce = getHTMLTemplate(code, content);
-
-  res.writeHead(code, {
-    'Content-Type': `text/html; charset=UTF-8`
-  });
-
-  res.statusCode = code;
-  res.end(htmlResponce);
-};
-
-const onClientConnect = async (req, res) => {
-  switch (req.url) {
-    case `/`:
-      try {
-        const fileContent = await readFile(MOCKS_OUTPUT_FILENAME);
-        const responceContent = JSON.parse(fileContent).map((post) => `<li>${post.title}</li>`).join(``);
-
-        sendResponce(res, HTTP_CODE.SUCCESS, responceContent);
-      } catch (err) {
-        sendResponce(res, HTTP_CODE.NOT_FOUND, `Not found`);
-      }
-      break;
-  }
-};
+});
 
 module.exports = {
   name: `--server`,
@@ -67,13 +29,12 @@ module.exports = {
     const [userPort] = args;
     const port = Number.parseInt(userPort, 10) || DEFAULT_SERVER_PORT;
 
-    const server = createServer(onClientConnect)
-    .listen(port, () => {
-      return console.info(chalk.green(`Server connected on port ${port}`));
-    });
-
-    server.on(`error`, ({message}) => {
-      return console.error(chalk.red(`Server error`, message));
-    });
+    app
+      .listen(port, () => {
+        return console.info(chalk.green(`Server connected on port ${port}`));
+      })
+      .on(`error`, ({message}) => {
+        return console.error(chalk.red(`Server error:`, message));
+      });
   }
 };
